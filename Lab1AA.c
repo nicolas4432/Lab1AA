@@ -9,6 +9,20 @@ typedef struct
 	int* arreglo;
 } DatosArchivo;
 
+typedef struct nodo
+{
+	struct nodo* siguiente;
+	struct nodo* anterior;
+	int posX;
+	int posY;
+} Lista;
+
+DatosArchivo LeerArchivo(char* NombreArchivo);
+int PosicionValida(int** Matriz, int CoordenadasX, int CoordenadasY, DatosArchivo Datos);
+int** CrearMatriz(DatosArchivo Datos);
+Lista* CrearLista(int CoordenadasX, int CoordenadasY);
+Lista* AgregarNodo(Lista* Actual, int CoordenadasX, int CoordenadasY);
+Lista* QuitarNodo(Lista* Actual);
 
 DatosArchivo LeerArchivo(char* NombreArchivo) {
 	
@@ -125,24 +139,113 @@ int PosicionValida(int** Matriz, int CoordenadasX, int CoordenadasY, DatosArchiv
 	return 1;
 }
 
-void main() {
+int** CrearMatriz(DatosArchivo Datos) {
 	
-	DatosArchivo datosIniciales = LeerArchivo("Entrada3.in");
-	//SE CREA LA MATRIZ
-	int** matriz = (int**)malloc(datosIniciales.matriz[0] * sizeof(int*));
+	int** matriz = (int**)malloc(Datos.matriz[0] * sizeof(int*));
 
-	for (int i = 0; i < datosIniciales.matriz[0]; i++)
+	for (int i = 0; i < Datos.matriz[0]; i++)
 	{
-		matriz[i] = (int*)malloc(datosIniciales.matriz[1] * sizeof(int));
-		for (int j = 0; j < datosIniciales.matriz[1]; j++)
+		matriz[i] = (int*)malloc(Datos.matriz[1] * sizeof(int));
+		for (int j = 0; j < Datos.matriz[1]; j++)
 		{
 			matriz[i][j] = 0;
 		}
 	}
-	
 
+	return matriz;
+}
+
+Lista* CrearLista(int CoordenadasX, int CoordenadasY) {
+
+	Lista* lista = (Lista*)malloc(sizeof(Lista));
+	lista->anterior = NULL;
+	lista->siguiente = NULL;
+	lista->posX = CoordenadasX;
+	lista->posY = CoordenadasY;
+
+	return lista;
+}
+
+Lista* AgregarNodo(Lista* Actual, int CoordenadasX, int CoordenadasY) {
+
+	Lista* listaInicial = Actual;
+	Lista* nodoNuevo = CrearLista(CoordenadasX, CoordenadasY);
+	listaInicial->siguiente = (Lista*)malloc(sizeof(Lista));
+	listaInicial->siguiente = nodoNuevo;
+	nodoNuevo->anterior = (Lista*)malloc(sizeof(Lista));
+	nodoNuevo->anterior = listaInicial;
+	nodoNuevo->siguiente = NULL;
+	nodoNuevo->posX = CoordenadasX;
+	nodoNuevo->posY = CoordenadasY;
+
+	return listaInicial;
+}
+
+Lista* QuitarNodo(Lista* Actual) {
+
+	Lista* listaInicial = Actual;
+	Lista* nodoFinal = (Lista*)malloc(sizeof(Lista));
+
+	while (listaInicial->siguiente != NULL)
+	{
+		listaInicial = listaInicial->siguiente;
+	}
+	nodoFinal = listaInicial;
+	listaInicial = listaInicial->anterior;
+	free(nodoFinal);
+	listaInicial->siguiente = NULL;
+	
+	while (listaInicial->anterior != NULL)
+	{
+		listaInicial = listaInicial->anterior;
+	}
+
+	return listaInicial;
+}
+
+Lista* CopiarLista(Lista* Actual) {
+
+	Lista* listaInicial = Actual;
+
+	while (listaInicial->anterior != NULL)
+	{
+		listaInicial = listaInicial->anterior;
+	}
+
+	Lista* nuevaLista = CrearLista(listaInicial->posX, listaInicial->posY);
+
+	while (listaInicial->siguiente != NULL)
+	{
+		listaInicial = listaInicial->siguiente;
+		if (true)
+		{
+			AgregarNodo(nuevaLista, listaInicial->posX, listaInicial->posY);
+		}
+		//AgregarNodo(nuevaLista, listaInicial->posX, listaInicial->posY);
+	}
+
+	return nuevaLista;
+}
+
+void main() {
+	
+	DatosArchivo datosIniciales = LeerArchivo("Entrada3.in");
+
+	int** matriz = CrearMatriz(datosIniciales);
+
+	Lista* lista = CrearLista(0, 0);
+	AgregarNodo(lista, 1, 1);
+
+	lista = lista->siguiente;
 	//PRUEBA DE FUNCIONAMIENTO
-	matriz[1][0] = -1;
+	matriz[lista->posX][lista->posY] = -1;
+	//lista = lista->anterior;
+	//QuitarNodo(lista);
+
+	Lista* copia = CopiarLista(lista);
+
+	AgregarNodo(copia, 1, 2);
+
 	for (int i = 0; i < datosIniciales.matriz[0]; i++)
 	{
 		
