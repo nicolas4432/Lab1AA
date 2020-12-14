@@ -23,6 +23,8 @@ int** CrearMatriz(DatosArchivo Datos);
 Lista* CrearLista(int CoordenadasX, int CoordenadasY);
 Lista* AgregarNodo(Lista* Actual, int CoordenadasX, int CoordenadasY);
 Lista* QuitarNodo(Lista* Actual);
+Lista* CopiarLista(Lista* Actual);
+int CompararListas(Lista* ResultadoNuevo, Lista* ResultadoViejo);
 
 DatosArchivo LeerArchivo(char* NombreArchivo) {
 	
@@ -280,7 +282,7 @@ void main() {
 	int** matriz = CrearMatriz(datosIniciales);
 
 	Lista* lista = CrearLista(0, 0);
-	AgregarNodo(lista, 1, 1);
+	//AgregarNodo(lista, 1, 1);
 
 	//lista = lista->siguiente;
 	//PRUEBA DE FUNCIONAMIENTO
@@ -288,10 +290,11 @@ void main() {
 	//lista = lista->anterior;
 	//QuitarNodo(lista);
 
-	Lista* copia = CopiarLista(lista);
+	//Lista* copia = CopiarLista(lista);
 	//AgregarNodo(copia, 0, 1);
 
-	printf("%d\n", CompararListas(copia, lista));
+	//printf("%d\n", CompararListas(copia, lista));
+
 
 	for (int i = 0; i < datosIniciales.matriz[0]; i++)
 	{
