@@ -18,6 +18,9 @@
     <ClCompile Include="Lab1AA.c">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="Source.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Entrada1.in">

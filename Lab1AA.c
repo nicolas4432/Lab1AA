@@ -2,38 +2,59 @@
 #include <string.h>
 #include <stdlib.h> //malloc
 
-
-
-void main() {
-	
+typedef struct
+{
 	int matriz[2];
 	int puntosObligatorios;
+	int* arreglo;
+} DatosArchivo;
 
-	FILE* sopaPtr = fopen("Entrada1.in", "r");							//Abrimos el archivo sopa.in con un Puntero FILE*
 
-	for (int i = 0; i < 2; i++)
+DatosArchivo LeerArchivo(char* NombreArchivo) {
+	
+	DatosArchivo datos;
+
+	FILE* Archivo = fopen(NombreArchivo, "r");
+
+	if (Archivo == NULL)
 	{
-		fscanf(sopaPtr, "%d\n", &matriz[i]);
+		printf("Archivo no Existe\n");
+		datos.matriz[0] = -1;
+		datos.matriz[1] = -1;
+		datos.puntosObligatorios = -1;
+		datos.arreglo = NULL;
+		return datos;
 	}
 
-	fscanf(sopaPtr, "%d\n", &puntosObligatorios);
+	fscanf(Archivo, "%d %d\n", &datos.matriz[0], &datos.matriz[1]);
+	fscanf(Archivo, "%d\n", &datos.puntosObligatorios);
 
-	int* arreglo = (int*)malloc(sizeof(int) * puntosObligatorios);
+	datos.arreglo = (int*)malloc(sizeof(int) * datos.puntosObligatorios);
 
-	if (puntosObligatorios != 0)
+	if (datos.puntosObligatorios != 0)
 	{
 		int contador = 0;
 
-		while (feof(sopaPtr) == 0)
+		while (feof(Archivo) == 0)
 		{
-			fscanf(sopaPtr, "%d\n", &arreglo[contador]);
-			contador++;
+			fscanf(Archivo, "%d %d\n", &datos.arreglo[contador], &datos.arreglo[contador + 1]);
+			contador = contador + 2;
 		}
 	}
 
-	for (int i = 0; i < 4; i++)
-	{
-		printf("%d", arreglo[i]);
-	}
+	fclose(Archivo);
+
+	return datos;
+}
+
+void main() {
+	
+	DatosArchivo datosIniciales = LeerArchivo("Entrada3.in");
 
 }
+
+//PARA IMPRIMIR LOS DATOS INICIALES
+//for (int i = 0; i < datosIniciales.puntosObligatorios * 2; i += 2)
+//{
+//	printf("%d %d\n", datosIniciales.arreglo[i], datosIniciales.arreglo[i + 1]);
+//}
