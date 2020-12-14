@@ -169,6 +169,12 @@ Lista* CrearLista(int CoordenadasX, int CoordenadasY) {
 Lista* AgregarNodo(Lista* Actual, int CoordenadasX, int CoordenadasY) {
 
 	Lista* listaInicial = Actual;
+
+	while (listaInicial->siguiente != NULL)
+	{
+		listaInicial = listaInicial->siguiente;
+	}
+
 	Lista* nodoNuevo = CrearLista(CoordenadasX, CoordenadasY);
 	listaInicial->siguiente = (Lista*)malloc(sizeof(Lista));
 	listaInicial->siguiente = nodoNuevo;
@@ -214,10 +220,10 @@ Lista* CopiarLista(Lista* Actual) {
 
 	Lista* nuevaLista = CrearLista(listaInicial->posX, listaInicial->posY);
 
-	while (listaInicial->siguiente != NULL)
+	while (listaInicial != NULL)
 	{
 		listaInicial = listaInicial->siguiente;
-		if (true)
+		if (listaInicial != NULL)
 		{
 			AgregarNodo(nuevaLista, listaInicial->posX, listaInicial->posY);
 		}
@@ -225,6 +231,46 @@ Lista* CopiarLista(Lista* Actual) {
 	}
 
 	return nuevaLista;
+}
+
+int CompararListas(Lista* ResultadoNuevo, Lista* ResultadoViejo) {
+
+	Lista* listaNueva = ResultadoNuevo;
+	Lista* listaVieja = ResultadoViejo;
+
+	int contadorNuevo = 0;
+	int contadorViejo = 0;
+
+	while (listaNueva->anterior != NULL)
+	{
+		listaNueva = listaNueva->anterior;
+	}
+
+	while (listaVieja->anterior != NULL)
+	{
+		listaVieja = listaVieja->anterior;
+	}
+
+	while (listaNueva->siguiente != NULL)
+	{
+		listaNueva = listaNueva->siguiente;
+		contadorNuevo++;
+	}
+
+	while (listaVieja->siguiente != NULL)
+	{
+		listaVieja = listaVieja->siguiente;
+		contadorViejo++;
+	}
+	
+	if (contadorNuevo > contadorViejo)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 void main() {
@@ -236,15 +282,16 @@ void main() {
 	Lista* lista = CrearLista(0, 0);
 	AgregarNodo(lista, 1, 1);
 
-	lista = lista->siguiente;
+	//lista = lista->siguiente;
 	//PRUEBA DE FUNCIONAMIENTO
-	matriz[lista->posX][lista->posY] = -1;
+	//matriz[lista->posX][lista->posY] = -1;
 	//lista = lista->anterior;
 	//QuitarNodo(lista);
 
 	Lista* copia = CopiarLista(lista);
+	//AgregarNodo(copia, 0, 1);
 
-	AgregarNodo(copia, 1, 2);
+	printf("%d\n", CompararListas(copia, lista));
 
 	for (int i = 0; i < datosIniciales.matriz[0]; i++)
 	{
@@ -261,6 +308,7 @@ void main() {
 		printf("\n");
 
 	}
+
 
 }
 
