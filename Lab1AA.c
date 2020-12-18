@@ -269,10 +269,29 @@ int CompararListas(Lista* ResultadoNuevo, Lista* ResultadoViejo) {
 	{
 		return 1;
 	}
+	
 	else
 	{
 		return 0;
 	}
+}
+
+int LargoLista(Lista* List) {
+	Lista* listaCopia = List;
+	int largo = 0;
+	//Se vuelve al inicio de la lista, en caso de no estarlo
+	while (listaCopia->anterior != NULL)
+	{
+		listaCopia = listaCopia->anterior;
+	}
+	//se cuentan las puntos recorridos
+	while (listaCopia->siguiente != NULL)
+	{
+		listaCopia = listaCopia->siguiente;
+		largo++;
+	}
+	return largo;
+
 }
 
 void main() {
@@ -281,38 +300,133 @@ void main() {
 
 	int** matriz = CrearMatriz(datosIniciales);
 
-	Lista* lista = CrearLista(0, 0);
-	//AgregarNodo(lista, 1, 1);
+	Lista* resultado = NULL;
+	Lista* recorrido = NULL;
 
-	//lista = lista->siguiente;
-	//PRUEBA DE FUNCIONAMIENTO
-	//matriz[lista->posX][lista->posY] = -1;
-	//lista = lista->anterior;
-	//QuitarNodo(lista);
+	//while (true)
+	//{
 
-	//Lista* copia = CopiarLista(lista);
-	//AgregarNodo(copia, 0, 1);
-
-	//printf("%d\n", CompararListas(copia, lista));
-
-
-	for (int i = 0; i < datosIniciales.matriz[0]; i++)
+	int x = 0;
+	int y = 0;
+	do
 	{
-		
-		for (int j = 0; j < datosIniciales.matriz[1]; j++) 
+		for (int i = x; i < datosIniciales.matriz[0]; i++)
 		{
-			if (PosicionValida(matriz, i, j, datosIniciales) == 1)
-			{
-				matriz[i][j] = -1;
-			}
 
-			printf("%d ", matriz[i][j]);
+			for (int j = y; j < datosIniciales.matriz[1]; j++)
+			{
+				if (PosicionValida(matriz, i, j, datosIniciales) == 1)
+				{
+					matriz[i][j] = -1;
+					if (recorrido == NULL)
+					{
+						recorrido = CrearLista(i, j);
+					}
+					else
+					{
+						AgregarNodo(recorrido, i, j);
+					}
+				}
+
+				//printf("%d ", matriz[i][j]);
+			}
+			//printf("\n");
+			y = 0;
+		}
+
+		for (int i = 0; i < datosIniciales.matriz[0]; i++)
+		{
+			for (int j = 0; j < datosIniciales.matriz[1]; j++) {
+				printf("%d ", matriz[i][j]);
+			}
+			printf("\n");
 		}
 		printf("\n");
+		printf("\n");
 
-	}
+		while (recorrido->siguiente != NULL)
+		{
+			recorrido = recorrido->siguiente;
+		}
+
+		matriz[recorrido->posX][recorrido->posY] = 0;
 
 
+		//for (int i = 0; i < datosIniciales.matriz[0]; i++)
+		//{
+		//	for (int j = 0; j < datosIniciales.matriz[1]; j++) {
+		//		printf("%d ", matriz[i][j]);
+		//	}
+		//	printf("\n");
+		//}
+		//printf("\n");
+		//printf("\n");
+
+		if (recorrido->posX < datosIniciales.matriz[0] && recorrido->posY < datosIniciales.matriz[1]) {
+			//if (recorrido->posX == datosIniciales.matriz[0] - 1)
+			//{
+			//	x = recorrido->posX ;
+			//	y = recorrido->posY + 1;
+			//}
+			if (recorrido->posY == datosIniciales.matriz[1] - 1 && recorrido->posX < datosIniciales.matriz[0] - 1)
+			{
+				x = recorrido->posX + 1;
+				y = 0;
+			}
+			else
+			{
+				x = recorrido->posX;
+				y = recorrido->posY + 1;
+			}
+
+
+		}
+
+		
+		if (resultado == NULL)
+		{
+			resultado = (Lista*)malloc(sizeof(Lista));
+			resultado = CopiarLista(recorrido);
+
+		}
+		else if (CompararListas(recorrido, resultado) == 1)
+		{
+			resultado = CopiarLista(recorrido);
+		}
+		if (LargoLista(recorrido) > 0)
+		{
+			recorrido = QuitarNodo(recorrido);
+		}
+		else {
+
+			if (recorrido->posX == datosIniciales.matriz[0] - 1 && recorrido->posY == datosIniciales.matriz[1] - 1)
+			{
+				recorrido = NULL;
+			}
+			else if (recorrido->posX < datosIniciales.matriz[0] && recorrido->posY < datosIniciales.matriz[1]) {
+				//if (recorrido->posX == datosIniciales.matriz[0] - 1)
+				//{
+				//	x = recorrido->posX ;
+				//	y = recorrido->posY + 1;
+				//}
+				if (recorrido->posY == datosIniciales.matriz[1] - 1 && recorrido->posX < datosIniciales.matriz[0] - 1)
+				{
+					recorrido->posX++;
+					recorrido->posY = 0;
+				}
+				else
+				{
+					recorrido->posY ++;
+				}
+
+
+			}
+		}
+
+	} while (recorrido != NULL);
+	//}
+
+	printf("\n");
 }
 
 //PARA IMPRIMIR LOS DATOS INICIALES
