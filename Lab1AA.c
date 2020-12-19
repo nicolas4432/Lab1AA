@@ -324,7 +324,15 @@ void main() {
 					}
 					else
 					{
-						AgregarNodo(recorrido, i, j);
+						//Se evita el cado repetido al iniciar denuevo la busqueda de resultado
+						if (recorrido->posX != i || recorrido->posY != j)
+						{
+							AgregarNodo(recorrido, i, j);
+						}
+						else {
+							printf("\n");
+						}
+						//AgregarNodo(recorrido, i, j);
 					}
 				}
 
@@ -426,7 +434,6 @@ void main() {
 	} while (recorrido != NULL);
 	//}
 
-	printf("\n");
 }
 
 //PARA IMPRIMIR LOS DATOS INICIALES
