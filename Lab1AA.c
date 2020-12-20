@@ -25,6 +25,7 @@ Lista* AgregarNodo(Lista* Actual, int CoordenadasX, int CoordenadasY);
 Lista* QuitarNodo(Lista* Actual);
 Lista* CopiarLista(Lista* Actual);
 int CompararListas(Lista* ResultadoNuevo, Lista* ResultadoViejo);
+int LargoLista(Lista* List);
 
 DatosArchivo LeerArchivo(char* NombreArchivo) {
 	
@@ -240,32 +241,7 @@ int CompararListas(Lista* ResultadoNuevo, Lista* ResultadoViejo) {
 	Lista* listaNueva = ResultadoNuevo;
 	Lista* listaVieja = ResultadoViejo;
 
-	int contadorNuevo = 0;
-	int contadorViejo = 0;
-
-	while (listaNueva->anterior != NULL)
-	{
-		listaNueva = listaNueva->anterior;
-	}
-
-	while (listaVieja->anterior != NULL)
-	{
-		listaVieja = listaVieja->anterior;
-	}
-
-	while (listaNueva->siguiente != NULL)
-	{
-		listaNueva = listaNueva->siguiente;
-		contadorNuevo++;
-	}
-
-	while (listaVieja->siguiente != NULL)
-	{
-		listaVieja = listaVieja->siguiente;
-		contadorViejo++;
-	}
-	
-	if (contadorNuevo > contadorViejo)
+	if (LargoLista(listaNueva) > LargoLista(listaVieja))
 	{
 		return 1;
 	}
@@ -441,51 +417,135 @@ Lista* Baktraking(DatosArchivo Datos) {
 	return resultado;
 }
 
+void EscribirResultados(Lista* Resultado, DatosArchivo Datos, char *NombreArchivoSalida) {
+	
+	FILE* archivo = fopen(NombreArchivoSalida, "w");
+	int** matriz = CrearMatriz(Datos);
+
+	if (Datos.puntosObligatorios != 0)
+	{
+		for (int i = 0; i < Datos.puntosObligatorios; i++)
+		{
+			Resultado = AgregarNodo(Resultado, Datos.arreglo[i * 2], Datos.arreglo[i * 2 + 1]);
+		}
+	}
+
+	while (Resultado->anterior != NULL)
+	{
+		Resultado = Resultado->anterior;
+	}
+
+	while (Resultado != NULL)
+	{
+		matriz[Resultado->posX][Resultado->posY] = -1;
+		if (Resultado->siguiente == NULL)
+		{
+			break;
+		}
+		Resultado = Resultado->siguiente;
+	}
+
+	fprintf(archivo, "%d\n", LargoLista(Resultado) + 1);
+
+	for (int i = 0; i < Datos.matriz[0]; i++)
+	{
+		for (int j = 0; j < Datos.matriz[1]; j++) {
+			if (matriz[i][j] != 0)
+			{
+				fprintf(archivo, "%d-%d || ", i, j);
+			}
+		}
+
+	}
+
+	fprintf(archivo, "\n");
+
+	for (int i = 0; i < Datos.matriz[0]; i++)
+	{
+		for (int j = 0; j < Datos.matriz[1]; j++) {
+			if (matriz[i][j] == 0)
+			{
+				fprintf(archivo, "_ ");
+			}
+			else
+			{
+				fprintf(archivo, "X ");
+			}
+		}
+		fprintf(archivo, "\n");
+	}
+
+	fclose(archivo);
+}
+
 void main() {
 	
-	DatosArchivo datosIniciales = LeerArchivo("Entrada1.in");
-
+	DatosArchivo datosIniciales = LeerArchivo("Entrada2.in");
 
 	Lista* resultado = Baktraking(datosIniciales);
 
-	int** matriz = CrearMatriz(datosIniciales);
+	EscribirResultados(resultado, datosIniciales, "puto.out");
 
 
 
-	if (datosIniciales.puntosObligatorios != 0)
-	{
-		for (int i = 0; i < datosIniciales.puntosObligatorios; i++)
-		{
-			matriz[datosIniciales.arreglo[i * 2]][datosIniciales.arreglo[i * 2 + 1]] = 1;
-		}
-	}
 
+	//FILE* archivo = fopen("Entrada1.out", "w");
 
+	//if (datosIniciales.puntosObligatorios != 0)
+	//{
+	//	for (int i = 0; i < datosIniciales.puntosObligatorios; i++)
+	//	{
+	//		resultado = AgregarNodo( resultado, datosIniciales.arreglo[i * 2], datosIniciales.arreglo[i * 2 + 1]);
+	//	}
+	//}
 
-	for (int i = 0; i < datosIniciales.matriz[0]; i++)
-	{
-		for (int j = 0; j < datosIniciales.matriz[1]; j++) {
-			if (matriz[i][j] == -1)
-			{
-				matriz[i][j] = 0;
-			}
-		}
-	}
-	
-	while (resultado != NULL)
-	{
-		matriz[resultado->posX][resultado->posY] = -1;
-		resultado = resultado->siguiente;
-	}
+	//while (resultado->anterior != NULL)
+	//{
+	//	resultado = resultado->anterior;
+	//}
 
-	for (int i = 0; i < datosIniciales.matriz[0]; i++)
-	{
-		for (int j = 0; j < datosIniciales.matriz[1]; j++) {
-			printf("%d ", matriz[i][j]);
-		}
-		printf("\n");
-	}
-	printf("\n");
+	//while (resultado != NULL)
+	//{
+	//	matriz[resultado->posX][resultado->posY] = -1;
+	//	if (resultado->siguiente == NULL)
+	//	{
+	//		break;
+	//	}
+	//	resultado = resultado->siguiente;
+	//}
+
+	//fprintf(archivo,"%d\n", LargoLista(resultado) + 1);
+
+	//for (int i = 0; i < datosIniciales.matriz[0]; i++)
+	//{
+	//	for (int j = 0; j < datosIniciales.matriz[1]; j++) {
+	//		if (matriz[i][j] != 0)
+	//		{
+	//			fprintf(archivo, "%d-%d || ", i, j);
+	//		}
+	//	}
+	//	
+	//}
+
+	//fprintf(archivo, "\n");
+
+	//for (int i = 0; i < datosIniciales.matriz[0]; i++)
+	//{
+	//	for (int j = 0; j < datosIniciales.matriz[1]; j++) {
+	//		if (matriz[i][j] == 0)
+	//		{
+	//			fprintf(archivo, "_ ");
+	//		}
+	//		else
+	//		{
+	//			fprintf(archivo, "X ");
+	//		}
+	//	}
+	//	fprintf(archivo, "\n");
+	//}
+
+	//fclose(archivo);
+
 }
 
 //PARA IMPRIMIR LOS DATOS INICIALES
