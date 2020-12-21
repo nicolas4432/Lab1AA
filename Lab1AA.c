@@ -572,7 +572,8 @@ void EscribirResultados(Lista* Resultado, DatosArchivo Datos, char *NombreArchiv
 	// Por cada coordenada de la matriz se escribe un "_" si esta libre y una "X" si posee un local
 	for (int i = 0; i < Datos.matriz[0]; i++)
 	{
-		for (int j = 0; j < Datos.matriz[1]; j++) {
+		for (int j = 0; j < Datos.matriz[1]; j++) 
+		{
 			if (matriz[i][j] == 0)
 			{
 				fprintf(archivo, "_ ");
